@@ -11,14 +11,14 @@ tags=['post'] #this will help group our request into categories. this is just  a
 
 
 
-@router.get('/post', response_model= list[schemas.PostOut])
-def get_post(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip= 0, search: Optional[str]= ''): #the limit(10) is the default limit. youl still have to enter the main limit the the url.   skip = 0 cause we dont want to skip anything by defaullt
+# @router.get('/post', response_model= list[schemas.PostOut])
+# def get_post(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip= 0, search: Optional[str]= ''): #the limit(10) is the default limit. youl still have to enter the main limit the the url.   skip = 0 cause we dont want to skip anything by defaullt
 
-    # posts = db.query(models.Post).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
+#     # posts = db.query(models.Post).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
 
-    results= db.query(models.Post, func.count(models.Vote.post_id).label('votes')).join(models.Vote, models.Post.id == models.Vote.post_id, isouter= True).group_by(models.Post.id).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all() #models.vote is the teable we want to make a joint. Post.id is the id from the post table we want to make a joint with. Vote.post_id is the id in votes table we want to join. group_ by is the way we want to group it where is id in the post is the main/head. there are 2 types of left joint(inner and outer).sqlalchemy performs inner by default but we want outer, thats why we put isouter.   we want to name the column where the number of counts per post will show, thats why we have label
+#     results= db.query(models.Post, func.count(models.Vote.post_id).label('votes')).join(models.Vote, models.Post.id == models.Vote.post_id, isouter= True).group_by(models.Post.id).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all() #models.vote is the teable we want to make a joint. Post.id is the id from the post table we want to make a joint with. Vote.post_id is the id in votes table we want to join. group_ by is the way we want to group it where is id in the post is the main/head. there are 2 types of left joint(inner and outer).sqlalchemy performs inner by default but we want outer, thats why we put isouter.   we want to name the column where the number of counts per post will show, thats why we have label
 
-    return results
+#     return results
 
 
 @router.get('/post/{id}', response_model= schemas.PostOut)
